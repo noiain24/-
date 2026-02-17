@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { ChefHat, QrCode, LogOut, Printer, Coffee } from 'lucide-react';
+import { ChefHat, QrCode, LogOut, Printer, Coffee, RotateCcw } from 'lucide-react';
 import { Order } from '../types';
 
 interface AdminViewProps {
   incomingOrders: Order[];
   onSimulateScan: (id: number) => void;
   onExitAdmin: () => void;
+  onResetSystem: () => void;
   logoUrl: string;
 }
 
-export const AdminView: React.FC<AdminViewProps> = ({ incomingOrders, onSimulateScan, onExitAdmin, logoUrl }) => {
+export const AdminView: React.FC<AdminViewProps> = ({ incomingOrders, onSimulateScan, onExitAdmin, onResetSystem, logoUrl }) => {
   const [activeTab, setActiveTab] = useState<'kitchen' | 'qr'>('kitchen'); 
 
   return (
@@ -26,7 +27,15 @@ export const AdminView: React.FC<AdminViewProps> = ({ incomingOrders, onSimulate
           <button onClick={() => setActiveTab('kitchen')} className={`w-full text-left p-6 rounded-[2.5rem] font-medium flex items-center gap-6 transition-all text-xl font-semibold ${activeTab === 'kitchen' ? 'bg-red-600 shadow-2xl shadow-red-900/40' : 'hover:bg-white/5 text-slate-500'}`}><ChefHat size={32} /> Kitchen Feed</button>
           <button onClick={() => setActiveTab('qr')} className={`w-full text-left p-6 rounded-[2.5rem] font-medium flex items-center gap-6 transition-all text-xl font-semibold ${activeTab === 'qr' ? 'bg-red-600 shadow-2xl shadow-red-900/40' : 'hover:bg-white/5 text-slate-500'}`}><QrCode size={32} /> QR Management</button>
         </nav>
-        <button onClick={onExitAdmin} className="mt-auto p-6 bg-white/5 hover:bg-red-600/20 rounded-3xl font-medium text-slate-400 flex items-center gap-6 transition-all border border-white/5 hover:text-red-500 font-semibold btn-press"><LogOut size={32} /> Customer Mode</button>
+        
+        <div className="space-y-4 mt-auto">
+          <button onClick={onResetSystem} className="w-full p-6 bg-slate-800 hover:bg-slate-700 rounded-3xl font-medium text-slate-400 flex items-center gap-6 transition-all border border-slate-700 hover:text-white font-semibold btn-press">
+            <RotateCcw size={32} /> Daily Reset
+          </button>
+          <button onClick={onExitAdmin} className="w-full p-6 bg-white/5 hover:bg-red-600/20 rounded-3xl font-medium text-slate-400 flex items-center gap-6 transition-all border border-white/5 hover:text-red-500 font-semibold btn-press">
+            <LogOut size={32} /> Customer Mode
+          </button>
+        </div>
       </aside>
 
       {/* Content Area */}
@@ -121,9 +130,9 @@ export const AdminView: React.FC<AdminViewProps> = ({ incomingOrders, onSimulate
             <ChefHat size={32}/>
             <span className="text-[12px] font-semibold uppercase tracking-widest">Feed</span>
         </button>
-        <button onClick={() => setActiveTab('qr')} className={`flex flex-col items-center gap-3 ${activeTab === 'qr' ? 'text-red-500 scale-125' : 'text-slate-500 opacity-60'} transition-all`}>
-            <QrCode size={32}/>
-            <span className="text-[12px] font-semibold uppercase tracking-widest">QR</span>
+        <button onClick={onResetSystem} className={`flex flex-col items-center gap-3 text-slate-500 opacity-60 transition-all active:text-red-500`}>
+            <RotateCcw size={32}/>
+            <span className="text-[12px] font-semibold uppercase tracking-widest">Reset</span>
         </button>
         <button onClick={onExitAdmin} className="flex flex-col items-center gap-3 text-slate-500 opacity-60 transition-all active:text-red-500">
             <LogOut size={32}/>

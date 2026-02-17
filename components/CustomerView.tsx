@@ -11,7 +11,7 @@ interface CustomerViewProps {
   soupMenu: Soup[];
   ingredientsMenu: IngredientsMenu;
   sauceMenu: Sauce[];
-  onSubmitOrder: (orderData: any) => Order;
+  onSubmitOrder: (orderData: any) => Promise<Order>; // เปลี่ยนเป็น Promise
   onBack: () => void;
   isSyncing: boolean;
   logoUrl: string;
@@ -64,8 +64,9 @@ export const CustomerView: React.FC<CustomerViewProps> = ({
     setCurrentBowl({ ...currentBowl, toppings: newToppings });
   };
 
-  const submitMalaBowl = () => {
-    const result = onSubmitOrder({
+  const submitMalaBowl = async () => {
+    // รอรับ Order Object ตัวจริงที่มีเลขคิวจาก Server
+    const result = await onSubmitOrder({
       type: 'Mala Bowl',
       items: currentBowl.toppings,
       details: {
@@ -340,7 +341,7 @@ export const CustomerView: React.FC<CustomerViewProps> = ({
                   step === 5 ? 'bg-emerald-600 text-white shadow-emerald-200' : 'bg-[#111827] text-white hover:bg-red-600 shadow-slate-900/30'
                 }`}
               >
-                {isSyncing ? 'SENDING...' : step === 5 ? 'ยืนยันออเดอร์' : 'ขั้นตอนถัดไป'}
+                {isSyncing ? 'Processing...' : step === 5 ? 'ยืนยันออเดอร์' : 'ขั้นตอนถัดไป'}
                 {step < 5 && !isSyncing && <ChevronRight className="w-5 h-5 md:w-7 md:h-7" />}
               </button>
            </div>

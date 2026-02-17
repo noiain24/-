@@ -5,7 +5,7 @@ import { sendToGoogleSheet } from './services/googleSheetService';
 import { MenuItem, Soup, Sauce, IngredientsMenu, Order, Topping } from './types';
 
 // Asset Constants
-const APP_LOGO_URL = "https://lh3.googleusercontent.com/u/0/d/1bTL8n_isrhu_BwCtwNlRawGT2MPH_1rM"; 
+const APP_LOGO_URL = "https://f5cea119-7371-4d34-b4d8-7f9ccb7e1913.jpg"; 
 
 // --- Data Menu Definitions ---
 const soupMenu: Soup[] = [
@@ -34,34 +34,48 @@ const App = () => {
   const [customerTable, setCustomerTable] = useState(1);
   const [incomingOrders, setIncomingOrders] = useState<Order[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [orderCount, setOrderCount] = useState(1);
+  
+  // ลบ orderCount local state ออก เพราะเราจะใช้ ID จาก Server
 
-  const handleCustomerSubmitOrder = (newOrderData: any): Order => {
-    const runningId = String(orderCount).padStart(3, '0');
-    const orderId = `#${runningId}`;
-    setOrderCount(prev => prev + 1);
+  const handleCustomerSubmitOrder = async (newOrderData: any): Promise<Order> => {
+    setIsSyncing(true);
     
-    const items: Topping[] = newOrderData.items.map((item: any) => ({ ...item, orderId: orderId, status: 'pending' }));
+    // สร้างรายการสินค้า (ตอนแรกใส่ ID ชั่วคราวไปก่อน)
+    const items: Topping[] = newOrderData.items.map((item: any) => ({ ...item, orderId: "PENDING", status: 'pending' }));
     
-    const orderSummary: Order = { 
-      id: orderId, 
+    const partialOrder = { 
       tableId: customerTable, 
       details: newOrderData.details, 
       items: items, 
       totalPrice: newOrderData.totalPrice, 
       timestamp: new Date(), 
-      orderType: newOrderData.orderType,
-      status: 'pending'
+      orderType: newOrderData.orderType
     };
 
-    setIncomingOrders([orderSummary, ...incomingOrders]);
+    // ส่งไป Google Sheet และรอรับ ID กลับมา (await)
+    const serverOrderId = await sendToGoogleSheet(partialOrder);
     
-    setIsSyncing(true);
-    sendToGoogleSheet(orderSummary).finally(() => {
-      setIsSyncing(false);
-    });
+    // อัปเดตข้อมูลด้วย ID จริงที่ได้มา
+    const finalOrder: Order = {
+      ...partialOrder,
+      id: serverOrderId,
+      status: 'pending',
+      items: items.map(i => ({ ...i, orderId: serverOrderId }))
+    };
+
+    // เพิ่มลงในรายการออเดอร์ของเครื่องนี้ (เพื่อโชว์ใน Admin View ของเครื่องนี้ได้ด้วย)
+    setIncomingOrders([finalOrder, ...incomingOrders]);
     
-    return orderSummary;
+    setIsSyncing(false);
+    return finalOrder;
+  };
+
+  const handleResetSystem = () => {
+    // การรีเซ็ตที่แท้จริงต้องทำที่ Google Sheet (ลบแถว)
+    // ปุ่มนี้จะเคลียร์แค่หน้าจอเครื่องนี้
+    if (window.confirm("⚠️ การรีเซ็ตนี้จะลบรายการบนหน้าจอเครื่องนี้เท่านั้น\n(หากต้องการเริ่มเลขคิว 001 ใหม่ ต้องไปลบแถวข้อมูลใน Google Sheet ด้วย)")) {
+      setIncomingOrders([]);
+    }
   };
 
   return (
@@ -71,6 +85,7 @@ const App = () => {
           incomingOrders={incomingOrders} 
           onSimulateScan={(id) => {setCustomerTable(id); setViewMode('customer');}} 
           onExitAdmin={() => setViewMode('customer')} 
+          onResetSystem={handleResetSystem}
           logoUrl={APP_LOGO_URL}
         />
       ) : (
