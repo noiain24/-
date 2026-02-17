@@ -5,7 +5,7 @@ import { sendToGoogleSheet } from './services/googleSheetService';
 import { MenuItem, Soup, Sauce, IngredientsMenu, Order, Topping } from './types';
 
 // Asset Constants
-const APP_LOGO_URL = "https://f5cea119-7371-4d34-b4d8-7f9ccb7e1913.jpg"; 
+const APP_LOGO_URL = "https://lh3.googleusercontent.com/u/0/d/1bTL8n_isrhu_BwCtwNlRawGT2MPH_1rM"; 
 
 // --- Data Menu Definitions ---
 const soupMenu: Soup[] = [
