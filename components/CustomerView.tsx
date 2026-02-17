@@ -176,7 +176,7 @@ export const CustomerView: React.FC<CustomerViewProps> = ({
               {soupMenu.map((soup) => (
                 <button key={soup.id} onClick={() => { setCurrentBowl({...currentBowl, base: soup, spice: soup.spiceLevel ? 'เผ็ดกลาง' : 'ไม่เผ็ด'}); setStep(3); }} className={`p-8 rounded-[2.5rem] border-2 text-left transition-all btn-press group relative overflow-hidden ${currentBowl.base?.id === soup.id ? 'border-red-500 bg-red-50/50 shadow-lg ring-4 ring-red-50' : 'bg-white border-slate-100 hover:border-red-200 shadow-sm'}`}>
                   <div className="flex justify-between items-center relative z-10">
-                    <div className="flex items-center gap-6"><span className="text-6xl group-hover:scale-110 transition-transform duration-500">{soup.icon}</span><div><span className="font-title font-semibold text-xl text-slate-800 block leading-none mb-2">{soup.name}</span>{!soup.spiceLevel && <span className="text-[11px] font-semibold text-blue-500 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">Mild</span>}</div></div>
+                    <div className="flex items-center gap-6"><span className="text-6xl group-hover:scale-110 transition-transform duration-500">{soup.icon}</span><div><span className="font-title font-semibold text-xl text-slate-800 block leading-none mb-2">{soup.name}</span>{!soup.spiceLevel && <span className="text-[11px] font-semibold text-blue-500 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-wider">ไม่เผ็ด</span>}</div></div>
                     <span className="font-title font-semibold text-2xl text-slate-800">฿{soup.price}</span>
                   </div>
                 </button>
