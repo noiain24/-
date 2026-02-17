@@ -5,7 +5,7 @@ import { sendToGoogleSheet } from './services/googleSheetService';
 import { MenuItem, Soup, Sauce, IngredientsMenu, Order, Topping } from './types';
 
 // Asset Constants
-const APP_LOGO_URL = "https://lh3.googleusercontent.com/u/0/d/1JC1Ot5hW43WL8s6O-w65I-r8Q5zD_Vy9"; 
+const APP_LOGO_URL = "https://f5cea119-7371-4d34-b4d8-7f9ccb7e1913.jpg"; 
 
 // --- Data Menu Definitions ---
 const soupMenu: Soup[] = [
@@ -23,10 +23,57 @@ const sauceMenu: Sauce[] = [
 ];
 
 const ingredientsMenu: IngredientsMenu = {
-  meat: { title: 'เนื้อสัตว์ (20.-)', icon: '🥩', items: [{ id: 'm1', name: 'หมูสามชั้น (สไลด์)', price: 20 }, { id: 'm2', name: 'สันคอหมู (สไลด์)', price: 20 }, { id: 'm3', name: 'ปลาดอลลี่', price: 20 }] },
-  balls: { title: 'ลูกชิ้น/เต้าหู้ (10.-)', icon: '🍡', items: [{ id: 'b1', name: 'ไข่นกกระทา', price: 10 }, { id: 'b2', name: 'หมูเด้ง', price: 10 }, { id: 'b3', name: 'ไส้กรอกหนังกรอบ', price: 10 }, { id: 'b7', name: 'เต้าหู้ชีส', price: 10 }, { id: 'b10', name: 'ฟองเต้าหู้ม้วนทอด', price: 10 }] },
-  veg: { title: 'ผักสด (10.-)', icon: '🥬', items: [{ id: 'v1', name: 'ผักบุ้ง', price: 10 }, { id: 'v2', name: 'ผักกวางตุ้ง', price: 10 }, { id: 'v3', name: 'ผักกาดขาว', price: 10 }, { id: 'v9', name: 'มันฝรั่งแผ่น', price: 10 }] },
-  noodle: { title: 'เส้น (10.-)', icon: '🍜', items: [{ id: 'n1', name: 'เส้นมันเทศใหญ่', price: 10 }, { id: 'n2', name: 'เส้นมันเทศเล็ก', price: 10 }, { id: 'n5', name: 'บะหมี่กึ่งสำเร็จรูป', price: 10 }] }
+  meat: { 
+    title: 'เนื้อสัตว์ (20.-)', 
+    icon: '🥩', 
+    items: [
+      { id: 'm1', name: 'หมูสามชั้น (สไลด์)', price: 20 }, 
+      { id: 'm2', name: 'สันคอหมู (สไลด์)', price: 20 }, 
+      { id: 'm3', name: 'ปลาดอลลี่', price: 20 }
+    ] 
+  },
+  veg: { 
+    title: 'ผักสด (10.-)', 
+    icon: '🥬', 
+    items: [
+      { id: 'v1', name: 'ผักบุ้ง', price: 10 }, 
+      { id: 'v2', name: 'ผักกวางตุ้ง', price: 10 }, 
+      { id: 'v3', name: 'ผักกาดขาว', price: 10 }, 
+      { id: 'v4', name: 'ผักกะหล่ำ', price: 10 },
+      { id: 'v5', name: 'เห็ดออรินจิ', price: 10 },
+      { id: 'v6', name: 'เห็ดเข็มทอง', price: 10 },
+      { id: 'v7', name: 'สาหร่ายวากาเมะ', price: 10 },
+      { id: 'v8', name: 'รากบัว', price: 10 },
+      { id: 'v9', name: 'มันฝรั่งแผ่น', price: 10 }
+    ] 
+  },
+  balls: { 
+    title: 'ลูกชิ้น/เต้าหู้ (10.-)', 
+    icon: '🍡', 
+    items: [
+      { id: 'b1', name: 'ไข่นกกระทา', price: 10 }, 
+      { id: 'b2', name: 'หมูเด้ง', price: 10 }, 
+      { id: 'b3', name: 'ไส้กรอกหนังกรอบ', price: 10 }, 
+      { id: 'b4', name: 'เต้าหู้ไข่', price: 10 },
+      { id: 'b5', name: 'เต้าหู้หมู', price: 10 },
+      { id: 'b6', name: 'เต้าหู้ปลา', price: 10 },
+      { id: 'b7', name: 'เต้าหู้ชีส', price: 10 }, 
+      { id: 'b8', name: 'ฟองเต้าหู้แผ่น', price: 10 },
+      { id: 'b9', name: 'ฟองเต้าหู้ดูดซุป', price: 10 },
+      { id: 'b10', name: 'ฟองเต้าหู้ม้วนทอด', price: 10 }
+    ] 
+  },
+  noodle: { 
+    title: 'เส้น (10.-)', 
+    icon: '🍜', 
+    items: [
+      { id: 'n1', name: 'เส้นมันเทศใหญ่', price: 10 }, 
+      { id: 'n2', name: 'เส้นมันเทศเล็ก', price: 10 }, 
+      { id: 'n3', name: 'เส้นแก้ว', price: 10 },
+      { id: 'n4', name: 'บะหมี่หยก', price: 10 },
+      { id: 'n5', name: 'บะหมี่กึ่งสำเร็จรูป', price: 10 }
+    ] 
+  }
 };
 
 const App = () => {
