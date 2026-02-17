@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CustomerView } from './components/CustomerView';
 import { AdminView } from './components/AdminView';
 import { sendToGoogleSheet } from './services/googleSheetService';
@@ -35,7 +35,19 @@ const App = () => {
   const [incomingOrders, setIncomingOrders] = useState<Order[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
   
-  // ลบ orderCount local state ออก เพราะเราจะใช้ ID จาก Server
+  // ตรวจสอบ URL Parameter เมื่อโหลดแอพครั้งแรก
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tableParam = params.get('table');
+    if (tableParam) {
+      const tableId = parseInt(tableParam, 10);
+      if (!isNaN(tableId) && tableId > 0) {
+        setCustomerTable(tableId);
+        setViewMode('customer');
+        // Optional: ล้าง URL เพื่อความสวยงาม (แต่ถ้าไม่ล้าง เวลา Refresh ก็จะยังอยู่โต๊ะเดิม)
+      }
+    }
+  }, []);
 
   const handleCustomerSubmitOrder = async (newOrderData: any): Promise<Order> => {
     setIsSyncing(true);
@@ -63,7 +75,7 @@ const App = () => {
       items: items.map(i => ({ ...i, orderId: serverOrderId }))
     };
 
-    // เพิ่มลงในรายการออเดอร์ของเครื่องนี้ (เพื่อโชว์ใน Admin View ของเครื่องนี้ได้ด้วย)
+    // เพิ่มลงในรายการออเดอร์ของเครื่องนี้
     setIncomingOrders([finalOrder, ...incomingOrders]);
     
     setIsSyncing(false);
@@ -71,8 +83,6 @@ const App = () => {
   };
 
   const handleResetSystem = () => {
-    // การรีเซ็ตที่แท้จริงต้องทำที่ Google Sheet (ลบแถว)
-    // ปุ่มนี้จะเคลียร์แค่หน้าจอเครื่องนี้
     if (window.confirm("⚠️ การรีเซ็ตนี้จะลบรายการบนหน้าจอเครื่องนี้เท่านั้น\n(หากต้องการเริ่มเลขคิว 001 ใหม่ ต้องไปลบแถวข้อมูลใน Google Sheet ด้วย)")) {
       setIncomingOrders([]);
     }
